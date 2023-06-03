@@ -1,4 +1,4 @@
-package com.rozi.dompetmakanan.ui.screen
+package com.rozi.dompetmakanan.ui.screen.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

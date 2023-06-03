@@ -3,16 +3,19 @@ package com.rozi.dompetmakanan
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.rozi.dompetmakanan.ui.navigation.NavigationScreen
+import com.rozi.dompetmakanan.ui.screen.login.LoginViewModel
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
+import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel : LoginViewModel by viewModels{ViewModelFactory.getInstance(application)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -22,22 +25,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    NavigationScreen(viewModel = viewModel)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DompetMakananTheme {
-        Greeting("Android")
     }
 }
