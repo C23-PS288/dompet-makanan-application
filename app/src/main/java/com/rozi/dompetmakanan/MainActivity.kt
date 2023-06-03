@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.rozi.dompetmakanan.ui.navigation.NavigationScreen
+import com.rozi.dompetmakanan.ui.navigation.LoginNavigation
 import com.rozi.dompetmakanan.ui.screen.login.LoginViewModel
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 class MainActivity : ComponentActivity() {
+//    private val viewModel : LoginViewModel by viewModels{ViewModelFactory.getInstance(application)}
 
-    private val viewModel : LoginViewModel by viewModels{ViewModelFactory.getInstance(application)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    NavigationScreen(viewModel = viewModel)
+                    DompetMakananApp(application = application)
                 }
             }
         }
