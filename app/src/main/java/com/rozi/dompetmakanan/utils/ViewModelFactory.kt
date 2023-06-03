@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.rozi.dompetmakanan.ui.screen.login.LoginViewModel
+import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
 
 class ViewModelFactory (private val maApplication: Application) :
     ViewModelProvider.NewInstanceFactory() {
@@ -27,6 +28,8 @@ class ViewModelFactory (private val maApplication: Application) :
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(LoginViewModel::class.java)) {
                 return LoginViewModel(maApplication) as T
+        }else if(modelClass.isAssignableFrom(RegisterViewModel::class.java)){
+            return RegisterViewModel() as T
         }
         throw IllegalArgumentException("Uknown ViewModel class: ${modelClass.name}")
     }

@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -25,7 +27,8 @@ fun CustomTextFieldWithEndIcon(
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle.Default,
     StartIcon: @Composable (() -> Unit),
-    EndIcon: @Composable (() -> Unit)
+    EndIcon: @Composable (() -> Unit),
+    passwordVisibility: Boolean
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -53,6 +56,7 @@ fun CustomTextFieldWithEndIcon(
             ),
             textStyle = textStyle,
             placeholder = { Text(text = placeHolder, style = TextStyle(fontSize = 12.sp)) },
+            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
         )
     }
 }

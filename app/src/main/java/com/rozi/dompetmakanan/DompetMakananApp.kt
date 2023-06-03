@@ -10,8 +10,10 @@ import androidx.navigation.compose.rememberNavController
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.screen.SplashScreen
 import com.rozi.dompetmakanan.ui.screen.home.HomeScreen
-import com.rozi.dompetmakanan.ui.screen.login.LoginContent
+import com.rozi.dompetmakanan.ui.screen.login.LoginScreen
 import com.rozi.dompetmakanan.ui.screen.login.LoginViewModel
+import com.rozi.dompetmakanan.ui.screen.register.RegisterScreen
+import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 @Composable
@@ -19,8 +21,12 @@ fun DompetMakananApp(application: Application) {
     val loginViewModel: LoginViewModel = viewModel(
         factory = ViewModelFactory.getInstance(application)
     )
+    val registerViewModel: RegisterViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(application)
+    )
     val navController = rememberNavController()
-    val loadingProgressBar = loginViewModel.progressBar.value
+    val loginLoadingProgressBar = loginViewModel.progressBar.value
+    val registerLoadingProgressBar = registerViewModel.progressBar.value
 
     NavHost(
         navController = navController,
@@ -41,9 +47,34 @@ fun DompetMakananApp(application: Application) {
                     }
                 }
             } else {
-                LoginContent(
-                    loadingProgressBar = loadingProgressBar,
-                    onclickLogin = loginViewModel::login
+                LoginScreen(
+                    loadingProgressBar = loginLoadingProgressBar,
+                    onclickLogin = loginViewModel::login,
+                    onClickRegister = { navController.navigate(Destination.Register.route) }
+                )
+            }
+        }
+
+        composable(route = Destination.Register.route) {
+            if (registerViewModel.isSuccessLoading.value) {
+                LaunchedEffect(key1 = Unit) {
+                    navController.navigate(route = Destination.Login.route) {
+                        popUpTo(Destination.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            } else {
+                RegisterScreen(
+                    onClickLogin = {
+                        navController.navigate(Destination.Login.route) {
+                            popUpTo(Destination.Login.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onClickRegister = registerViewModel::register,
+                    loadingProgressBar = registerLoadingProgressBar
                 )
             }
         }

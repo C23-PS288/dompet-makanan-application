@@ -1,6 +1,7 @@
 package com.rozi.dompetmakanan.ui.screen.login
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -9,7 +10,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -17,25 +17,24 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rozi.dompetmakanan.R
-import com.rozi.dompetmakanan.di.Injection
 import com.rozi.dompetmakanan.ui.components.*
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
-import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 
 @Composable
-fun LoginContent(
+fun LoginScreen(
     modifier: Modifier = Modifier,
     loadingProgressBar: Boolean,
     onclickLogin: (email: String, password: String) -> Unit,
+    onClickRegister: () -> Unit
 ) {
     Column(modifier = Modifier.background(Color.White)) {
         BannerAuth()
         var textEmail by rememberSaveable { mutableStateOf("") }
         var textPassword by rememberSaveable { mutableStateOf("") }
-        val isValidate by derivedStateOf { textEmail.isNotBlank() && textPassword.isNotBlank() }
+        val isValidate by derivedStateOf { textEmail.isNotBlank() && textPassword.length > 8 }
+        val passwordVisibility = remember { mutableStateOf(false) }
         Column(
             modifier = modifier
                 .offset(y = (-40).dp)
@@ -48,7 +47,7 @@ fun LoginContent(
                     )
                 )
         ) {
-            Spacer(modifier = modifier.padding(top = 56.dp))
+            Spacer(modifier = modifier.padding(top = 20.dp))
             Divider(
                 color = MaterialTheme.colors.primary,
                 modifier = modifier
@@ -80,7 +79,22 @@ fun LoginContent(
                 },
                 modifier = modifier,
                 startIcon = painterResource(id = R.drawable.ic_lock),
-                endIcon = painterResource(id = R.drawable.ic_show)
+                endIcon = {
+                    IconButton(
+                        onClick = { passwordVisibility.value = !passwordVisibility.value }
+                    ) {
+                        val visibilityIcon = if (passwordVisibility.value) {
+                            painterResource(id = R.drawable.ic_hide)
+                        } else {
+                            painterResource(id = R.drawable.ic_show)
+                        }
+                        Icon(
+                            painter = visibilityIcon,
+                            contentDescription = if (passwordVisibility.value) "Hide password" else "Show password"
+                        )
+                    }
+                },
+                passwordVisibility = passwordVisibility.value
             )
             Text(
                 text = "Lupa Password?",
@@ -95,7 +109,7 @@ fun LoginContent(
             )
             CustomButton(
                 text = "Login", modifier = modifier.padding(top = 43.dp),
-                onClick = {onclickLogin(textEmail, textPassword)},
+                onClick = { onclickLogin(textEmail, textPassword) },
                 enabled = isValidate
             )
             Row(
@@ -115,7 +129,8 @@ fun LoginContent(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.primary
-                    )
+                    ),
+                    modifier = modifier.clickable { onClickRegister() }
                 )
             }
         }

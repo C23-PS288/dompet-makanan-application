@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.rozi.dompetmakanan.R
+import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 import kotlinx.coroutines.delay
 
@@ -31,7 +32,8 @@ fun SplashScreen(navController: NavController) {
 
     LaunchedEffect(true) {
         delay(2000) // Wait for 2 seconds
-        navController.navigate("login")
+        navController.popBackStack()
+        navController.navigate(Destination.Login.route)
     }
 
     val context = LocalContext.current
