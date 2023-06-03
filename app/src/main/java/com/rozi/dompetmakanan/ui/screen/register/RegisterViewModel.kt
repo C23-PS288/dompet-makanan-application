@@ -1,6 +1,5 @@
 package com.rozi.dompetmakanan.ui.screen.register
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel() : ViewModel() {
+class RegisterViewModel : ViewModel() {
     val isSuccessLoading = mutableStateOf(value = false)
     val progressBar = mutableStateOf(value = false)
     private val registerRequestLiveData = MutableLiveData<Boolean>()
