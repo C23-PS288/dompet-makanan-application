@@ -20,7 +20,8 @@ fun CustomTextFieldWithLabelEndIcon(
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle.Default,
     startIcon: Painter,
-    endIcon: Painter,
+    endIcon: @Composable (() -> Unit),
+    passwordVisibility: Boolean
 ) {
     Text(
         text = label,
@@ -43,11 +44,7 @@ fun CustomTextFieldWithLabelEndIcon(
                 tint = MaterialTheme.colors.primary
             )
         },
-        EndIcon = {
-            Icon(
-                painter = endIcon,
-                contentDescription = null,
-            )
-        }
+        EndIcon = endIcon,
+        passwordVisibility = passwordVisibility
     )
 }
