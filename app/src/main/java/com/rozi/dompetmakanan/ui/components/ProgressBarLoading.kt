@@ -17,8 +17,8 @@ fun ProgressBarLoading(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.85f),
-            verticalArrangement = Arrangement.Bottom,
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CircularProgressIndicator(

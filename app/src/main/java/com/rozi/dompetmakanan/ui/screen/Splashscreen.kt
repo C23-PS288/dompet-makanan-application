@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.rozi.dompetmakanan.R
+import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 import kotlinx.coroutines.delay
@@ -30,10 +31,17 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavController) {
 
+    val preferences = TokenPreferences(LocalContext.current)
+    val token: String = preferences.getToken()
+
     LaunchedEffect(true) {
         delay(2000) // Wait for 2 seconds
         navController.popBackStack()
-        navController.navigate(Destination.Login.route)
+        if (token != "") {
+            navController.navigate(Destination.Home.route)
+        } else {
+            navController.navigate(Destination.Login.route)
+        }
     }
 
     val context = LocalContext.current

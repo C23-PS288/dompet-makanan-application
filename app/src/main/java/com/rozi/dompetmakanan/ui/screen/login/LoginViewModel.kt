@@ -18,6 +18,7 @@ import retrofit2.Response
 class LoginViewModel(application: Application) : ViewModel() {
     val isSuccessLoading = mutableStateOf(value = false)
     val progressBar = mutableStateOf(value = false)
+    val snackbarError = mutableStateOf(value = false)
     private val loginRequestLiveData = MutableLiveData<Boolean>()
     private val preferences = TokenPreferences(application)
 
@@ -37,18 +38,22 @@ class LoginViewModel(application: Application) : ViewModel() {
                                 preferences.setToken(it.data.accessToken)
                                 Log.d("Token", "Token ${it.data.accessToken}")
                             }
+                        }else{
+                            snackbarError.value = true
                         }
                         loginRequestLiveData.postValue(response.isSuccessful)
                         progressBar.value = false
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        snackbarError.value = true
                         Log.d("Logging", t.message!!)
                         progressBar.value = false
                     }
                 })
             } catch (e: Exception) {
                 Log.d("Logging", "Error Authentication", e)
+                snackbarError.value = true
                 progressBar.value = false
             }
         }

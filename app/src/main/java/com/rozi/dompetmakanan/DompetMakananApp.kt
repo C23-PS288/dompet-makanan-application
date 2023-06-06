@@ -50,7 +50,8 @@ fun DompetMakananApp(application: Application) {
                 LoginScreen(
                     loadingProgressBar = loginLoadingProgressBar,
                     onclickLogin = loginViewModel::login,
-                    onClickRegister = { navController.navigate(Destination.Register.route) }
+                    onClickRegister = { navController.navigate(Destination.Register.route) },
+                    onDismiss = {loginViewModel.snackbarError.value = false},
                 )
             }
         }
@@ -80,7 +81,7 @@ fun DompetMakananApp(application: Application) {
         }
 
         composable(route = Destination.Home.route) {
-            HomeScreen()
+            HomeScreen(navController = navController)
         }
     }
 }
