@@ -10,6 +10,7 @@ data class Data(
 	val createdAt: String,
 	val password: String,
 	val name: String,
+	val phone : String,
 	val id: Int,
 	val email: String,
 	val updatedAt: String

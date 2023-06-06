@@ -18,11 +18,11 @@ class RegisterViewModel : ViewModel() {
     val progressBar = mutableStateOf(value = false)
     private val registerRequestLiveData = MutableLiveData<Boolean>()
 
-    fun register(name: String, email: String, password: String) {
+    fun register(name: String, email: String, phone: String,password: String, confirmPass: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 progressBar.value = true
-                val client = ApiConfig.getApiService().register(name, email, password)
+                val client = ApiConfig.getApiService().register(name, email, phone,password, confirmPass)
                 client.enqueue(object : Callback<RegisterResponse> {
                     override fun onResponse(
                         call: Call<RegisterResponse>,
