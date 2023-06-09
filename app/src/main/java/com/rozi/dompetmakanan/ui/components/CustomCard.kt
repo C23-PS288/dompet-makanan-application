@@ -17,14 +17,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rozi.dompetmakanan.R
+import com.rozi.dompetmakanan.ui.screen.home.Menu
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 
 @Composable
 fun CustomCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    menu: Menu,
 ){
     Card(
-        modifier = modifier.width(140.dp),
+        modifier = modifier.width(140.dp).padding(5.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
@@ -33,7 +35,7 @@ fun CustomCard(
     ) {
         Column {
             Image(
-                painter = painterResource(R.drawable.banner),
+                painter = painterResource(menu.image),
                 contentDescription = "Menu Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -43,7 +45,7 @@ fun CustomCard(
             )
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
-                    text = "Menu Makanan",
+                    text = menu.Title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium.copy(
@@ -51,7 +53,7 @@ fun CustomCard(
                     ),
                 )
                 Text(
-                    text = "Deskripsi Makanan",
+                    text = menu.descripton,
                     style = MaterialTheme.typography.titleSmall,
                 )
             }
@@ -63,6 +65,8 @@ fun CustomCard(
 @Composable
 fun CustomCardPreview () {
     DompetMakananTheme {
-        CustomCard()
+        CustomCard(
+            menu = Menu(R.drawable.banner, "Makanan 1", "Deskripsi", "Rp. 90.000")
+        )
     }
 }
