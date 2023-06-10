@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
+import com.rozi.dompetmakanan.data.lokal.UserPreferences
 import com.rozi.dompetmakanan.data.remote.response.LoginResponse
 import com.rozi.dompetmakanan.data.remote.retrofit.ApiConfig
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,8 @@ class LoginViewModel(application: Application) : ViewModel() {
     val progressBar = mutableStateOf(value = false)
     val snackbarError = mutableStateOf(value = false)
     private val loginRequestLiveData = MutableLiveData<Boolean>()
-    private val preferences = TokenPreferences(application)
+    private val tokenPreferences = TokenPreferences(application)
+    private val userPreferences = UserPreferences(application)
 
     fun login(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,7 +37,8 @@ class LoginViewModel(application: Application) : ViewModel() {
                         if (response.isSuccessful) {
                             isSuccessLoading.value = true
                             response.body()?.let {
-                                preferences.setToken(it.data.accessToken)
+                                tokenPreferences.setToken(it.data.accessToken?:"")
+                                userPreferences.setUserId(it.data.id?:0)
                                 Log.d("Token", "Token ${it.data.accessToken}")
                             }
                         }else{

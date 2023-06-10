@@ -3,6 +3,8 @@ package com.rozi.dompetmakanan.utils
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.rozi.dompetmakanan.di.Injection
+import com.rozi.dompetmakanan.ui.screen.home.HomeViewModel
 import com.rozi.dompetmakanan.ui.screen.login.LoginViewModel
 import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
 
@@ -30,6 +32,8 @@ class ViewModelFactory (private val maApplication: Application) :
                 return LoginViewModel(maApplication) as T
         }else if(modelClass.isAssignableFrom(RegisterViewModel::class.java)){
             return RegisterViewModel() as T
+        }else if(modelClass.isAssignableFrom(HomeViewModel::class.java)){
+            return HomeViewModel(Injection.provideUserRepository(maApplication)) as T
         }
         throw IllegalArgumentException("Uknown ViewModel class: ${modelClass.name}")
     }
