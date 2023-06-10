@@ -1,5 +1,6 @@
 package com.rozi.dompetmakanan.ui.screen.home
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,13 +31,38 @@ import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.ui.components.CustomCard
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
+import com.rozi.dompetmakanan.utils.UiState
+import com.rozi.dompetmakanan.utils.ViewModelFactory
+
+@Composable
+fun HomeScreen(
+    application: Application,
+    viewModel: HomeViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(application = application)
+    ),
+    onClickLogOut: () -> Unit
+) {
+    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
+                viewModel.getUserById()
+            }
+            is UiState.Success -> {
+                val data = uiState.data
+                HomeContent(
+                    onClickLogOut = onClickLogOut,
+                    nama = data.name?:"Kosong"
+                )
+            }
+            is UiState.Error -> {}
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    navController: NavController,
-) {
-    var text by remember { mutableStateOf("") }
+fun HomeContent(nama: String, onClickLogOut: () -> Unit) {
+var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
 
     val preferences = TokenPreferences(LocalContext.current)
@@ -147,12 +174,5 @@ fun HomeScreen(
             .offset(y = 150.dp)
             .clip(RoundedCornerShape(15.dp)),
     )
-}
-
-@Preview(showBackground = false)
-@Composable
-fun HomePreview(){
-    DompetMakananTheme{
-        HomeScreen(rememberNavController())
     }
 }
