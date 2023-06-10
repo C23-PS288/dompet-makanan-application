@@ -1,6 +1,5 @@
 package com.rozi.dompetmakanan.ui.screen.home
 
-import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,151 +26,146 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
+import com.rozi.dompetmakanan.ui.components.BottomBar
 import com.rozi.dompetmakanan.ui.components.CustomCard
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
-import com.rozi.dompetmakanan.utils.UiState
-import com.rozi.dompetmakanan.utils.ViewModelFactory
 
+private val currentRoute = mutableStateOf(ItemBotNavBar.Home.route)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun HomeScreen(
-    application: Application,
-    viewModel: HomeViewModel = viewModel(
-        factory = ViewModelFactory.getInstance(application = application)
-    ),
-    onClickLogOut: () -> Unit
+    navController: NavController,
 ) {
-    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when (uiState) {
-            is UiState.Loading -> {
-                viewModel.getUserById()
-            }
-            is UiState.Success -> {
-                val data = uiState.data
-                HomeContent(
-                    onClickLogOut = onClickLogOut,
-                    nama = data.name?:"Kosong"
-                )
-            }
-            is UiState.Error -> {}
+    var text by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+
+
+    val preferences = TokenPreferences(LocalContext.current)
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                selectedRoute = currentRoute.value,
+                onItemSelected = { currentRoute.value = it.route }
+            )
         }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.White)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.Black)
+                        .height(240.dp),
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text(
+                                    text = "Lokasi",
+                                    color = Color.Gray,
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                    )
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Tuban, Jawa Timur",
+                                        color = Color.White,
+                                        style = TextStyle(
+                                            fontSize = 16.sp
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Image(
+                                        painter = painterResource(R.drawable.mingcute_down),
+                                        contentDescription = "Drop Down",
+                                        contentScale = ContentScale.FillHeight
+                                    )
+                                }
+                            }
+                            Image(
+                                painter = painterResource(R.drawable.profile_icon),
+                                contentDescription = "Profile Icon",
+                                modifier = Modifier.clickable {
+                                    preferences.setToken("")
+                                    navController.navigate(route = Destination.Login.route)
+                                }
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            SearchBar(
+                                modifier = Modifier
+                                    .width(320.dp)
+                                    .height(50.dp),
+                                query = text,
+                                onQueryChange = { text = it},
+                                onSearch = {active = false},
+                                active = active,
+                                onActiveChange = { active = it },
+                                placeholder = { Text(text = "Cari Makanan")},
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.iconamoon_search),
+                                        contentDescription = "Search Icon",
+                                    )
+                                },
+                                shape = RoundedCornerShape(20.dp),
+                                colors = SearchBarDefaults.colors(
+                                    containerColor = Color(73,73,73),
+                                ),
+                            ) {
+
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(100.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(7.dp)
+                ) {
+                    items(dummyMenu){menu ->
+                        CustomCard(menu = menu)
+                    }
+                }
+            }
+        }
+        Image(
+            painter = painterResource(R.drawable.banner),
+            contentDescription = "Food Banner",
+            modifier = Modifier
+                .padding(start = 45.dp, end = 45.dp)
+                .offset(y = 150.dp)
+                .clip(RoundedCornerShape(15.dp)),
+        )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = false)
 @Composable
-fun HomeContent(nama: String, onClickLogOut: () -> Unit) {
-var text by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
-
-    val preferences = TokenPreferences(LocalContext.current)
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.Black)
-                    .height(240.dp),
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(
-                                text = "Lokasi",
-                                color = Color.Gray,
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                )
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Tuban, Jawa Timur",
-                                    color = Color.White,
-                                    style = TextStyle(
-                                        fontSize = 16.sp
-                                    )
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Image(
-                                    painter = painterResource(R.drawable.mingcute_down),
-                                    contentDescription = "Drop Down",
-                                    contentScale = ContentScale.FillHeight
-                                )
-                            }
-                        }
-                        Image(
-                            painter = painterResource(R.drawable.profile_icon),
-                            contentDescription = "Profile Icon",
-                            modifier = Modifier.clickable {
-                                preferences.setToken("")
-                                navController.navigate(route = Destination.Login.route)
-                            }
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        SearchBar(
-                            modifier = Modifier
-                                .width(320.dp)
-                                .height(50.dp),
-                            query = text,
-                            onQueryChange = { text = it},
-                            onSearch = {active = false},
-                            active = active,
-                            onActiveChange = { active = it },
-                            placeholder = { Text(text = "Cari Makanan")},
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.iconamoon_search),
-                                    contentDescription = "Search Icon",
-                                )
-                            },
-                            shape = RoundedCornerShape(20.dp),
-                            colors = SearchBarDefaults.colors(
-                                containerColor = Color(73,73,73),
-                            ),
-                        ) {
-
-                        }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(100.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(7.dp)
-            ) {
-                items(dummyMenu){menu ->
-                    CustomCard(menu = menu)
-                }
-            }
-        }
-    }
-    Image(
-        painter = painterResource(R.drawable.banner),
-        contentDescription = "Food Banner",
-        modifier = Modifier
-            .padding(start = 45.dp, end = 45.dp)
-            .offset(y = 150.dp)
-            .clip(RoundedCornerShape(15.dp)),
-    )
+fun HomePreview(){
+    DompetMakananTheme{
+        HomeScreen(rememberNavController())
     }
 }
