@@ -33,7 +33,7 @@ class ViewModelFactory (private val maApplication: Application) :
         }else if(modelClass.isAssignableFrom(RegisterViewModel::class.java)){
             return RegisterViewModel() as T
         }else if(modelClass.isAssignableFrom(HomeViewModel::class.java)){
-            return HomeViewModel(Injection.provideUserRepository(maApplication)) as T
+            return HomeViewModel(Injection.provideFoodRepository(maApplication)) as T
         }
         throw IllegalArgumentException("Uknown ViewModel class: ${modelClass.name}")
     }

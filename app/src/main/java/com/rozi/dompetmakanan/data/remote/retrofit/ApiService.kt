@@ -1,5 +1,6 @@
 package com.rozi.dompetmakanan.data.remote.retrofit
 
+import com.rozi.dompetmakanan.data.remote.response.FoodResponse
 import com.rozi.dompetmakanan.data.remote.response.GetUserResponse
 import com.rozi.dompetmakanan.data.remote.response.LoginResponse
 import com.rozi.dompetmakanan.data.remote.response.RegisterResponse
@@ -33,4 +34,7 @@ interface ApiService {
     fun getUserWithId(
         @Path("id") id : Int
     ) : Call<GetUserResponse>
+
+    @GET("foods")
+    suspend fun getAllFoods() : FoodResponse
 }

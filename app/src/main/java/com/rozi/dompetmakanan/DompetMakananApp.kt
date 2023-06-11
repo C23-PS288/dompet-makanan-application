@@ -6,9 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.screen.SplashScreen
 import com.rozi.dompetmakanan.ui.screen.home.HomeScreen
@@ -30,7 +28,6 @@ fun DompetMakananApp(application: Application) {
     val loginLoadingProgressBar = loginViewModel.progressBar.value
     val registerLoadingProgressBar = registerViewModel.progressBar.value
 
-    val tokenPreferences = TokenPreferences(application)
 
     NavHost(
         navController = navController,
@@ -61,9 +58,7 @@ fun DompetMakananApp(application: Application) {
             if (registerViewModel.isSuccessLoading.value) {
                 LaunchedEffect(key1 = Unit) {
                     navController.navigate(route = Destination.Login.route) {
-                        popUpTo(Destination.Login.route) {
-                            inclusive = true
-                        }
+                        launchSingleTop = true
                     }
                 }
             } else {
@@ -82,10 +77,7 @@ fun DompetMakananApp(application: Application) {
         }
 
         composable(route = Destination.Home.route) {
-            HomeScreen(application = application){
-                tokenPreferences.setToken("")
-                navController.navigate(Destination.Login.route)
-            }
+            HomeScreen(application = application, navController = navController)
         }
     }
 }

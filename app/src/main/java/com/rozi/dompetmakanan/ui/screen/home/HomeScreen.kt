@@ -1,5 +1,6 @@
 package com.rozi.dompetmakanan.ui.screen.home
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,19 +25,45 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
+import com.rozi.dompetmakanan.model.Food
 import com.rozi.dompetmakanan.ui.components.BottomBar
 import com.rozi.dompetmakanan.ui.components.CustomCard
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
+import com.rozi.dompetmakanan.utils.UiState
+import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 private val currentRoute = mutableStateOf(ItemBotNavBar.Home.route)
+
+@Composable
+fun HomeScreen(
+    application: Application,
+    viewModel: HomeViewModel = viewModel(
+        factory = ViewModelFactory(application)
+    ),
+    navController: NavController
+) {
+    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
+                viewModel.getAllFoods()
+            }
+            is UiState.Success -> {
+                HomeContent(navController = navController, foods = uiState.data)
+            }
+            is UiState.Error -> {}
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
-fun HomeScreen(
+fun HomeContent(
     navController: NavController,
+    foods: List<Food>
 ) {
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
@@ -103,8 +130,13 @@ fun HomeScreen(
                                 painter = painterResource(R.drawable.profile_icon),
                                 contentDescription = "Profile Icon",
                                 modifier = Modifier.clickable {
+                                    navController.popBackStack()
+                                    navController.navigate(route = Destination.Login.route) {
+                                        popUpTo(Destination.Login.route) {
+                                            inclusive = true
+                                        }
+                                    }
                                     preferences.setToken("")
-                                    navController.navigate(route = Destination.Login.route)
                                 }
                             )
                         }
@@ -119,11 +151,11 @@ fun HomeScreen(
                                     .width(320.dp)
                                     .height(50.dp),
                                 query = text,
-                                onQueryChange = { text = it},
-                                onSearch = {active = false},
+                                onQueryChange = { text = it },
+                                onSearch = { active = false },
                                 active = active,
                                 onActiveChange = { active = it },
-                                placeholder = { Text(text = "Cari Makanan")},
+                                placeholder = { Text(text = "Cari Makanan") },
                                 leadingIcon = {
                                     Icon(
                                         painter = painterResource(R.drawable.iconamoon_search),
@@ -132,7 +164,7 @@ fun HomeScreen(
                                 },
                                 shape = RoundedCornerShape(20.dp),
                                 colors = SearchBarDefaults.colors(
-                                    containerColor = Color(73,73,73),
+                                    containerColor = Color(73, 73, 73),
                                 ),
                             ) {
 
@@ -145,7 +177,7 @@ fun HomeScreen(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(7.dp)
                 ) {
-                    items(dummyMenu){menu ->
+                    items(foods) { menu ->
                         CustomCard(menu = menu)
                     }
                 }
@@ -164,8 +196,8 @@ fun HomeScreen(
 
 @Preview(showBackground = false)
 @Composable
-fun HomePreview(){
-    DompetMakananTheme{
-        HomeScreen(rememberNavController())
+fun HomePreview() {
+    DompetMakananTheme {
+//        HomeScreen(rememberNavController())
     }
 }
