@@ -48,7 +48,7 @@ fun CustomCard(
             )
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
-                    text = menu.namaWarung?:"",
+                    text = menu.menu?:"",
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleMedium.copy(
