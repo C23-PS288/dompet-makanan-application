@@ -23,9 +23,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.model.Food
@@ -77,11 +76,12 @@ fun HomeContent(
                 onItemSelected = { currentRoute.value = it.route }
             )
         }
-    ) {
+    ) {innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Color.White)
+                .padding(innerPadding)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
