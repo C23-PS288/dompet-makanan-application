@@ -10,19 +10,26 @@ import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.data.lokal.UserPreferences
 import com.rozi.dompetmakanan.data.remote.response.LoginResponse
 import com.rozi.dompetmakanan.data.remote.retrofit.ApiConfig
+import com.rozi.dompetmakanan.model.Food
+import com.rozi.dompetmakanan.utils.UiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginViewModel(application: Application) : ViewModel() {
-    val isSuccessLoading = mutableStateOf(value = false)
+//    val isSuccessLoading = mutableStateOf(value = false)
     val progressBar = mutableStateOf(value = false)
     val snackbarError = mutableStateOf(value = false)
     private val loginRequestLiveData = MutableLiveData<Boolean>()
     private val tokenPreferences = TokenPreferences(application)
     private val userPreferences = UserPreferences(application)
+
+    private val _authUIState : MutableStateFlow<AuthUIState> = MutableStateFlow(AuthUIState.OnNotLogin)
+    val authUIState: StateFlow<AuthUIState> get() = _authUIState
 
     fun login(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,7 +42,8 @@ class LoginViewModel(application: Application) : ViewModel() {
                         response: Response<LoginResponse>
                     ) {
                         if (response.isSuccessful) {
-                            isSuccessLoading.value = true
+//                            isSuccessLoading.value = true
+                            _authUIState.value =AuthUIState.OnLogin
                             response.body()?.let {
                                 tokenPreferences.setToken(it.data.accessToken?:"")
                                 userPreferences.setUserId(it.data.id?:0)

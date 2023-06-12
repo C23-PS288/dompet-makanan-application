@@ -1,11 +1,13 @@
 package com.rozi.dompetmakanan.ui.screen.login
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,18 +19,47 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.widget.ContentLoadingProgressBar
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.ui.components.*
+import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
+import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    loadingProgressBar: Boolean,
-    onDismiss: () -> Unit,
-    onclickLogin: (email: String, password: String) -> Unit,
+    application: Application,
+    viewModel: LoginViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(application)
+    ),
+    onLoginState: () -> Unit,
     onClickRegister: () -> Unit
+) {
+    viewModel.authUIState.collectAsState(initial = AuthUIState.OnNotLogin).value.let { authUiStatte ->
+        when (authUiStatte) {
+            AuthUIState.OnLogin -> {
+                LaunchedEffect(key1 = Unit) {
+                    onLoginState()
+                }
+            }
+            AuthUIState.OnNotLogin -> {
+                LoginContent(
+                    onClickRegister = onClickRegister,
+                    onClickLogin = viewModel::login,
+                    loadingProgressBar = viewModel.progressBar.value
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginContent(
+    modifier: Modifier = Modifier,
+    onClickRegister: () -> Unit,
+    onClickLogin: (email: String, password: String) -> Unit,
+    loadingProgressBar: Boolean
 ) {
     Box {
         Column(
@@ -115,7 +146,7 @@ fun LoginScreen(
                 )
                 CustomButton(
                     text = "Login", modifier = modifier.padding(top = 43.dp),
-                    onClick = { onclickLogin(textEmail, textPassword) },
+                    onClick = { onClickLogin(textEmail, textPassword) },
                     enabled = isValidate
                 )
                 Row(
@@ -142,7 +173,6 @@ fun LoginScreen(
             }
         }
         ProgressBarLoading(isLoading = loadingProgressBar, modifier = modifier)
-
     }
 }
 

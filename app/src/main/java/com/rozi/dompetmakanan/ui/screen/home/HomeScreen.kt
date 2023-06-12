@@ -31,6 +31,7 @@ import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.model.Food
 import com.rozi.dompetmakanan.ui.components.BottomBar
 import com.rozi.dompetmakanan.ui.components.CustomCard
+import com.rozi.dompetmakanan.ui.components.ProgressBarLoading
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 import com.rozi.dompetmakanan.utils.UiState
@@ -50,6 +51,7 @@ fun HomeScreen(
         when (uiState) {
             is UiState.Loading -> {
                 viewModel.getAllFoods()
+                Loading()
             }
             is UiState.Success -> {
                 HomeContent(navController = navController, foods = uiState.data)
@@ -57,6 +59,11 @@ fun HomeScreen(
             is UiState.Error -> {}
         }
     }
+}
+
+@Composable
+fun Loading(){
+    ProgressBarLoading(isLoading = true)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,13 +137,13 @@ fun HomeContent(
                                 painter = painterResource(R.drawable.profile_icon),
                                 contentDescription = "Profile Icon",
                                 modifier = Modifier.clickable {
+                                    preferences.setToken("")
                                     navController.popBackStack()
                                     navController.navigate(route = Destination.Login.route) {
                                         popUpTo(Destination.Login.route) {
                                             inclusive = true
                                         }
                                     }
-                                    preferences.setToken("")
                                 }
                             )
                         }
@@ -193,6 +200,7 @@ fun HomeContent(
         )
     }
 }
+
 
 @Preview(showBackground = false)
 @Composable

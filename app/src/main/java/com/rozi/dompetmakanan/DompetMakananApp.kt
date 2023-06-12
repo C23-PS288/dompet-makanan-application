@@ -11,21 +11,16 @@ import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.screen.SplashScreen
 import com.rozi.dompetmakanan.ui.screen.home.HomeScreen
 import com.rozi.dompetmakanan.ui.screen.login.LoginScreen
-import com.rozi.dompetmakanan.ui.screen.login.LoginViewModel
 import com.rozi.dompetmakanan.ui.screen.register.RegisterScreen
 import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 @Composable
 fun DompetMakananApp(application: Application) {
-    val loginViewModel: LoginViewModel = viewModel(
-        factory = ViewModelFactory.getInstance(application)
-    )
     val registerViewModel: RegisterViewModel = viewModel(
         factory = ViewModelFactory.getInstance(application)
     )
     val navController = rememberNavController()
-    val loginLoadingProgressBar = loginViewModel.progressBar.value
     val registerLoadingProgressBar = registerViewModel.progressBar.value
 
 
@@ -35,23 +30,23 @@ fun DompetMakananApp(application: Application) {
     ) {
 
         composable(route = Destination.SplashScreen.route) {
-            SplashScreen(navController = navController)
+            SplashScreen(
+                navToHome = { navController.navigate(Destination.Home.route) },
+                navToLogin = { navController.navigate(Destination.Login.route) }
+            )
         }
 
         composable(route = Destination.Login.route) {
-            if (loginViewModel.isSuccessLoading.value) {
-                LaunchedEffect(key1 = Unit) {
+            LoginScreen(
+                onClickRegister = { navController.navigate(Destination.Register.route) },
+                application = application,
+                onLoginState = {
                     navController.popBackStack()
-                    navController.navigate(route = Destination.Home.route)
+                    navController.navigate(route = Destination.Home.route) {
+                        launchSingleTop = true
+                    }
                 }
-            } else {
-                LoginScreen(
-                    loadingProgressBar = loginLoadingProgressBar,
-                    onclickLogin = loginViewModel::login,
-                    onClickRegister = { navController.navigate(Destination.Register.route) },
-                    onDismiss = {loginViewModel.snackbarError.value = false},
-                )
-            }
+            )
         }
 
         composable(route = Destination.Register.route) {

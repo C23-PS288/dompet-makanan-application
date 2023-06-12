@@ -29,18 +29,17 @@ import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navToLogin : () -> Unit, navToHome : () -> Unit) {
 
     val preferences = TokenPreferences(LocalContext.current)
     val token: String = preferences.getToken()
 
     LaunchedEffect(true) {
         delay(2000) // Wait for 2 seconds
-        navController.popBackStack()
         if (token != "") {
-            navController.navigate(Destination.Home.route)
+            navToHome()
         } else {
-            navController.navigate(Destination.Login.route)
+            navToLogin()
         }
     }
 
