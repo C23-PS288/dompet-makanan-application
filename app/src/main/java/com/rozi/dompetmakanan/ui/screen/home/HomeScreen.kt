@@ -76,7 +76,7 @@ fun HomeContent(
     val preferences = TokenPreferences(LocalContext.current)
     Scaffold(
         bottomBar = {
-            BottomBar()
+            BottomBar(navController = navController)
         }
     ) {innerPadding ->
         Box(

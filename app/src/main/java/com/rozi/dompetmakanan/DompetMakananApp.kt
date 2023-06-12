@@ -9,8 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.screen.SplashScreen
+import com.rozi.dompetmakanan.ui.screen.camera.ScanImageScreen
 import com.rozi.dompetmakanan.ui.screen.home.HomeScreen
 import com.rozi.dompetmakanan.ui.screen.login.LoginScreen
+import com.rozi.dompetmakanan.ui.screen.profile.ProfileScreen
 import com.rozi.dompetmakanan.ui.screen.register.RegisterScreen
 import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
 import com.rozi.dompetmakanan.utils.ViewModelFactory
@@ -73,6 +75,14 @@ fun DompetMakananApp(application: Application) {
 
         composable(route = Destination.Home.route) {
             HomeScreen(application = application, navController = navController)
+        }
+
+        composable(route = Destination.Camera.route) {
+            ScanImageScreen()
+        }
+
+        composable(route = Destination.Profile.route) {
+            ProfileScreen()
         }
     }
 }
