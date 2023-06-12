@@ -36,8 +36,6 @@ import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 import com.rozi.dompetmakanan.utils.UiState
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 
-private val currentRoute = mutableStateOf(ItemBotNavBar.Home.route)
-
 @Composable
 fun HomeScreen(
     application: Application,
@@ -78,10 +76,7 @@ fun HomeContent(
     val preferences = TokenPreferences(LocalContext.current)
     Scaffold(
         bottomBar = {
-            BottomBar(
-                selectedRoute = currentRoute.value,
-                onItemSelected = { currentRoute.value = it.route }
-            )
+            BottomBar()
         }
     ) {innerPadding ->
         Box(
@@ -134,7 +129,7 @@ fun HomeContent(
                                 }
                             }
                             Image(
-                                painter = painterResource(R.drawable.profile_icon),
+                                painter = painterResource(R.drawable.setting),
                                 contentDescription = "Profile Icon",
                                 modifier = Modifier.clickable {
                                     preferences.setToken("")
@@ -182,7 +177,7 @@ fun HomeContent(
                 Spacer(modifier = Modifier.height(100.dp))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(7.dp)
+                    contentPadding = PaddingValues(7.dp),
                 ) {
                     items(foods) { menu ->
                         CustomCard(menu = menu)
