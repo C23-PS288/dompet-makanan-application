@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.screen.home.ItemBotNavBar
@@ -23,6 +25,8 @@ import com.rozi.dompetmakanan.ui.screen.home.ItemBotNavBar
 fun BottomBar(
     navController: NavController
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     val NavigationItems= listOf(
         ItemBotNavBar(
