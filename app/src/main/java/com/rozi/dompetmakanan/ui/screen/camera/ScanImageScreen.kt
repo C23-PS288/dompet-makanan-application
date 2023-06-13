@@ -16,7 +16,7 @@ import com.rozi.dompetmakanan.ui.components.TopBar
 fun ScanImageScreen () {
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(title = "Pindai Gambar")
         }
     ) {
         Box(
