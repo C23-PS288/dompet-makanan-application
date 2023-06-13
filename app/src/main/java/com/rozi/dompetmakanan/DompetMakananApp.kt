@@ -6,10 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.rozi.dompetmakanan.ui.components.BottomBar
 import com.rozi.dompetmakanan.ui.navigation.Destination
 import com.rozi.dompetmakanan.ui.screen.SplashScreen
@@ -19,6 +21,7 @@ import com.rozi.dompetmakanan.ui.screen.login.LoginScreen
 import com.rozi.dompetmakanan.ui.screen.profile.ProfileScreen
 import com.rozi.dompetmakanan.ui.screen.register.RegisterScreen
 import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
+import com.rozi.dompetmakanan.ui.screen.resultPredict.ResultPredictScreen
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 
 @Composable
@@ -99,8 +102,19 @@ fun DompetMakananApp(application: Application) {
 
             composable(route = Destination.Camera.route) {
                 ScanImageScreen(
-                    context = application
+                    context = application,
+                    onSuccess = {
+                        navController.navigate(Destination.ResultPredict.createRoute(it))
+                    }
                 )
+            }
+
+            composable(
+                route = Destination.ResultPredict.route,
+                arguments = listOf(navArgument("uri") {type = NavType.StringType})
+            ) {
+                val uri = it.arguments?.getString("uri") ?:""
+                ResultPredictScreen(application = application, uri = uri)
             }
 
             composable(route = Destination.Profile.route) {

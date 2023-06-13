@@ -8,6 +8,10 @@ sealed class Destination(val route : String) {
     object Camera : Destination(route = "camera")
     object Profile : Destination(route = "profile")
 
+    object ResultPredict : Destination(route = "result/{uri}"){
+        fun createRoute(uri : String) = "result/$uri"
+    }
+
     companion object {
         fun getStartDestination() = SplashScreen.route
     }
