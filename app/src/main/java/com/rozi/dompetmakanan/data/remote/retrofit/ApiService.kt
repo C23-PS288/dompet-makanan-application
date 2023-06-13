@@ -38,6 +38,7 @@ interface ApiService {
     @GET("foods")
     suspend fun getAllFoods() : FoodResponse
 
+    @FormUrlEncoded
     @POST("recommendation/location")
     suspend fun getFoodByKategori(
         @Field("kategori") kategori : String

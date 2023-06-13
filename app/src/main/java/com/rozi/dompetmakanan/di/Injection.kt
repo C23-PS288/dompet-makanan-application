@@ -18,8 +18,9 @@ object Injection {
         return FoodRepository(apiService, context)
     }
     fun providePredictRepository(context: Context) : PredictRepository {
-        val apiService = ApiConfig.getApiServiceTensorFlow()
-        return PredictRepository(apiService, context)
+        val apiServiceML = ApiConfig.getApiServiceTensorFlow()
+        val apiService = ApiConfig.getApiService()
+        return PredictRepository(apiService,apiServiceML, context)
     }
 
 }

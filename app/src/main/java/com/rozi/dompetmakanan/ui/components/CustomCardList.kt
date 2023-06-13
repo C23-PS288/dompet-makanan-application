@@ -12,13 +12,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.rozi.dompetmakanan.R
+import com.rozi.dompetmakanan.model.Food
+import com.rozi.dompetmakanan.ui.screen.home.Menu
+import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 
-@Preview
 @Composable
 fun CustomCardList(
-    modifier: Modifier = Modifier
-){
+    modifier: Modifier = Modifier,
+    menu: Food
+) {
     Card(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -27,9 +31,9 @@ fun CustomCardList(
                 .fillMaxWidth()
                 .height(100.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.banner),
-                contentDescription = "Item Image",
+            AsyncImage(
+                model = menu.menuPic,
+                contentDescription = menu.menu,
                 modifier = modifier
                     .clip(shape = RoundedCornerShape(10.dp))
                     .width(120.dp),
@@ -40,12 +44,19 @@ fun CustomCardList(
                     .weight(1f)
                     .padding(start = 5.dp, top = 5.dp)
             ) {
-                Text(text = "Nama Makanan")
+                Text(text = menu.menu ?: "")
                 Text(
-                    text = "Deskripsi",
+                    text = menu.namaWarung ?: "",
                     modifier = modifier.padding(top = 8.dp)
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun CustomCardListPreview() {
+    DompetMakananTheme {
     }
 }

@@ -12,12 +12,12 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class ResultPredictViewModel(private val repository: PredictRepository) : ViewModel() {
-    private val _uiState : MutableStateFlow<UiState<String>> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState<String>> get() = _uiState
+    private val _uiState : MutableStateFlow<UiState<List<Food>>> = MutableStateFlow(UiState.Loading)
+    val uiState: StateFlow<UiState<List<Food>>> get() = _uiState
 
     fun postPredict(file : File){
         viewModelScope.launch {
-            repository.uploadImage(file)
+            repository.predictImage(file)
                 .catch {
                     _uiState.value = UiState.Error(it.message.toString()) }
 
