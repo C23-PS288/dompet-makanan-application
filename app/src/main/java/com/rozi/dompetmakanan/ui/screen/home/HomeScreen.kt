@@ -28,7 +28,6 @@ import androidx.navigation.NavController
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.model.Food
-import com.rozi.dompetmakanan.ui.components.BottomBar
 import com.rozi.dompetmakanan.ui.components.CustomCard
 import com.rozi.dompetmakanan.ui.components.ProgressBarLoading
 import com.rozi.dompetmakanan.ui.navigation.Destination
@@ -75,9 +74,6 @@ fun HomeContent(
 
     val preferences = TokenPreferences(LocalContext.current)
     Scaffold(
-        bottomBar = {
-            BottomBar(navController = navController)
-        }
     ) {innerPadding ->
         Box(
             modifier = Modifier
