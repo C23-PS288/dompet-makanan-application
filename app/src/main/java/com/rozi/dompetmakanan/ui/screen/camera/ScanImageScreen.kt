@@ -19,11 +19,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.rozi.dompetmakanan.ui.components.TopBar
 import com.rozi.dompetmakanan.utils.ComposeFileProvider
+import java.net.URI
+import java.net.URLEncoder
 
 @Composable
 fun ScanImageScreen(
     modifier: Modifier = Modifier,
-    context: Context
+    context: Context,
+    onSuccess: (String) -> Unit
 ) {
     var hasImage by remember {
         mutableStateOf(false)
@@ -48,14 +51,14 @@ fun ScanImageScreen(
         }
     )
 
-    Box(modifier = modifier) {
-        if (hasImage && imageUri != null) {
-            AsyncImage(
-                model = imageUri,
-                modifier = Modifier.fillMaxWidth(),
-                contentDescription = "Selected image"
-            )
+    if(hasImage && imageUri != null){
+        val uri = Uri.encode(imageUri.toString())
+        LaunchedEffect(key1 = Unit){
+            onSuccess(uri!!)
         }
+    }
+
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
