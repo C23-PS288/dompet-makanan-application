@@ -88,7 +88,6 @@ fun ScanImageScreen(
                     Text(text = "Select Image")
                 }
                 Button(
-                    modifier = Modifier.padding(top = 16.dp),
                     onClick = {
                         val uri = ComposeFileProvider.getImageUri(context = context)
                         imageUri = uri
