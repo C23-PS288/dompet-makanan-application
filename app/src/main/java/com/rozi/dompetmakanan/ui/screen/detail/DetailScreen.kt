@@ -2,8 +2,13 @@ package com.rozi.dompetmakanan.ui.screen.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +26,7 @@ import com.rozi.dompetmakanan.ui.components.TopBar
 fun DetailScreen(){
     Box(
         modifier = Modifier
-            .background(Color.Green)
+            .background(Color.White)
             .fillMaxSize()
     ) {
         Column(
@@ -60,8 +65,72 @@ fun DetailScreen(){
                             modifier = Modifier.weight(1f)
                         )
                     }
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Deskripsi")
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
+                    ) {
+                        Text(
+                            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, se d do eiusmod tempor incididunt ut labore et dolore magna a liqua. Ut enim ad minim veniam, quis nostrud exercitation ulla mco laboris nisi ut aliquip ex ea  commodo consequat.",
+                            textAlign = TextAlign.Justify
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Customization(title = "Kustomisasi 1") {
+                        LazyCustom(modifier = Modifier, customItem1)
+                    }
+
+                    Spacer(modifier = Modifier.padding(top = 10.dp))
+                    Customization(title = "Kustomisasi 2") {
+                        LazyCustom(modifier = Modifier, customItem2)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun Customization(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+){
+    Column(modifier) {
+        Text(text = title, modifier)
+        content()
+    }
+}
+
+@Composable
+fun LazyCustom(
+    modifier: Modifier = Modifier,
+    list: List<ContentCustomize>
+){
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier
+    ){
+        items(list){ item ->
+            itemCustom(item)
+        }
+    }
+}
+
+@Composable
+fun itemCustom(customize: ContentCustomize){
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .clickable { },
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.elevatedCardElevation()
+    ){
+        Text(text = customize.customize, modifier = Modifier.padding(6.dp))
     }
 }
