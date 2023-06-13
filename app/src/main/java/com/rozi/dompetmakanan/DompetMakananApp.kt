@@ -1,6 +1,7 @@
 package com.rozi.dompetmakanan
 
 import android.app.Application
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +25,7 @@ import com.rozi.dompetmakanan.ui.screen.register.RegisterViewModel
 import com.rozi.dompetmakanan.ui.screen.resultPredict.ResultPredictScreen
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 
+@ExperimentalMaterialApi
 @Composable
 fun DompetMakananApp(application: Application) {
     val registerViewModel: RegisterViewModel = viewModel(
@@ -34,7 +36,6 @@ fun DompetMakananApp(application: Application) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
 
     Scaffold(
         bottomBar = {

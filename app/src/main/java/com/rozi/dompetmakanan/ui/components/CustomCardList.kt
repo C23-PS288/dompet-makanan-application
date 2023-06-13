@@ -1,21 +1,19 @@
 package com.rozi.dompetmakanan.ui.components
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.model.Food
-import com.rozi.dompetmakanan.ui.screen.home.Menu
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
 
 @Composable
@@ -24,7 +22,8 @@ fun CustomCardList(
     menu: Food
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth().padding(bottom = 5.dp).clickable {  },
+        elevation = CardDefaults.elevatedCardElevation()
     ) {
         Row(
             modifier = modifier
@@ -36,7 +35,7 @@ fun CustomCardList(
                 contentDescription = menu.menu,
                 modifier = modifier
                     .clip(shape = RoundedCornerShape(10.dp))
-                    .width(120.dp),
+                    .width(100.dp),
                 contentScale = ContentScale.FillHeight
             )
             Column(
