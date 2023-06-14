@@ -3,13 +3,7 @@ package com.rozi.dompetmakanan.data.remote.retrofit
 import com.rozi.dompetmakanan.data.remote.response.*
 import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -32,15 +26,19 @@ interface ApiService {
 
     @GET("users/{id}")
     suspend fun getUserWithId(
+        @Header("Authorization") token : String,
         @Path("id") id : Int
     ) : GetUserResponse
 
     @GET("foods")
-    suspend fun getAllFoods() : FoodResponse
+    suspend fun getAllFoods(
+        @Header("Authorization") token : String
+    ) : FoodResponse
 
     @FormUrlEncoded
     @POST("recommendation/location")
     suspend fun getFoodByKategori(
+        @Header("Authorization") token : String,
         @Field("kategori") kategori : String
     ) : FoodResponse
 
