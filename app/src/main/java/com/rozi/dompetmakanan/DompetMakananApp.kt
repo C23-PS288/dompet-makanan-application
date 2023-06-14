@@ -119,7 +119,7 @@ fun DompetMakananApp(application: Application) {
             }
 
             composable(route = Destination.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(navController = navController)
             }
         }
     }
