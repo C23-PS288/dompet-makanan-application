@@ -1,11 +1,14 @@
 package com.rozi.dompetmakanan.ui.screen.profile
 
+import android.app.Application
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,17 +23,54 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
+import com.rozi.dompetmakanan.model.User
+import com.rozi.dompetmakanan.ui.components.ProgressBarLoading
 import com.rozi.dompetmakanan.ui.navigation.Destination
+import com.rozi.dompetmakanan.utils.UiState
+import com.rozi.dompetmakanan.utils.ViewModelFactory
+
 
 @Composable
-fun ProfileScreen(navController: NavController){
+fun ProfileScreen(
+    application: Application,
+    viewModel: ProfileViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(application)
+    ),
+    onLogout: () -> Unit
+) {
+    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
+                viewModel.getUser()
+                Loading()
+            }
+            is UiState.Success -> {
+                ProfileContent(data = uiState.data) {
+                    onLogout()
+                }
+            }
+            is UiState.Error -> {}
+        }
+    }
+}
+
+@Composable
+fun Loading(){
+    ProgressBarLoading(isLoading = true)
+}
+
+@Composable
+fun ProfileContent(
+    data: User,
+    onLogout: () -> Unit
+) {
     val preferences = TokenPreferences(LocalContext.current)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(248,248,248))
+            .background(Color(248, 248, 248))
             .verticalScroll(rememberScrollState())
-    ){
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -41,10 +81,12 @@ fun ProfileScreen(navController: NavController){
                 )
                 .clip(shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)),
             elevation = 20.dp
-        ) { Box(modifier = Modifier.background(Color.Black))}
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .offset(y = (-70).dp)) {
+        ) { Box(modifier = Modifier.background(Color.Black)) }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(y = (-70).dp)
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -71,7 +113,7 @@ fun ProfileScreen(navController: NavController){
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Annie",
+                    text = data.name ?: "",
                     textAlign = TextAlign.Center,
                     style = TextStyle(
                         fontSize = 30.sp,
@@ -88,11 +130,12 @@ fun ProfileScreen(navController: NavController){
                 Image(
                     painter = painterResource(R.drawable.fluent_location),
                     contentDescription = "Locatoin Symbol",
-                    contentScale = ContentScale.Fit)
+                    contentScale = ContentScale.Fit
+                )
                 Text(
                     text = "Tuban, Jawa Timur",
                     modifier = Modifier.padding(start = 3.dp),
-                    style = TextStyle(Color(157,157,157))
+                    style = TextStyle(Color(157, 157, 157))
                 )
             }
             Row(
@@ -103,9 +146,9 @@ fun ProfileScreen(navController: NavController){
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "randomemail@gmail.com",
+                    text = data.phone ?: "",
                     modifier = Modifier.padding(start = 3.dp),
-                    style = TextStyle(Color(157,157,157))
+                    style = TextStyle(Color(157, 157, 157))
                 )
             }
             Spacer(modifier = Modifier.padding(10.dp))
@@ -118,13 +161,8 @@ fun ProfileScreen(navController: NavController){
                     .clip(shape = RoundedCornerShape(10.dp))
                     .clickable {
                         preferences.setToken("")
-                        navController.popBackStack()
-                        navController.navigate(route = Destination.Login.route) {
-                            popUpTo(Destination.Login.route) {
-                                inclusive = true
-                            }
-                        }
-                               },
+                        onLogout()
+                    },
                 elevation = 100.dp
             ) {
                 Row(

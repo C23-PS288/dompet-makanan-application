@@ -39,7 +39,7 @@ fun DompetMakananApp(application: Application) {
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != Destination.Login.route && currentRoute != Destination.Register.route && currentRoute != Destination.SplashScreen.route) {
+            if (currentRoute != Destination.Login.route && currentRoute != Destination.Register.route && currentRoute != Destination.SplashScreen.route && currentRoute != Destination.ResultPredict.route) {
                 BottomBar(navController)
             }
         }
@@ -98,7 +98,11 @@ fun DompetMakananApp(application: Application) {
             }
 
             composable(route = Destination.Home.route) {
-                HomeScreen(application = application, navController = navController)
+                HomeScreen(application = application,
+                    onSuccess = {
+                        navController.navigate(Destination.ResultPredict.createRoute(it))
+                    }
+                )
             }
 
             composable(route = Destination.Camera.route) {
@@ -112,14 +116,21 @@ fun DompetMakananApp(application: Application) {
 
             composable(
                 route = Destination.ResultPredict.route,
-                arguments = listOf(navArgument("uri") {type = NavType.StringType})
+                arguments = listOf(navArgument("uri") { type = NavType.StringType })
             ) {
-                val uri = it.arguments?.getString("uri") ?:""
+                val uri = it.arguments?.getString("uri") ?: ""
                 ResultPredictScreen(application = application, uri = uri)
             }
 
             composable(route = Destination.Profile.route) {
-                ProfileScreen(navController = navController)
+                ProfileScreen(application = application){
+                    navController.popBackStack()
+                    navController.navigate(route = Destination.Login.route) {
+                        popUpTo(Destination.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             }
         }
     }

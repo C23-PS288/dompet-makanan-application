@@ -14,16 +14,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: FoodRepository) : ViewModel() {
-//    private val _uiState: MutableStateFlow<UiState<User>> = MutableStateFlow(UiState.Loading)
-//    val uiState : StateFlow<UiState<User>> get() = _uiState
-//
-//
-//    fun getUserById(){
-//        viewModelScope.launch {
-//            _uiState.value = UiState.Loading
-//            _uiState.value = UiState.Success(repository.getUserWithId())
-//        }
-//    }
 
     private val _uiState : MutableStateFlow<UiState<List<Food>>> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState<List<Food>>> get() = _uiState

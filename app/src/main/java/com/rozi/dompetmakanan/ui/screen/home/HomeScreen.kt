@@ -1,6 +1,9 @@
 package com.rozi.dompetmakanan.ui.screen.home
 
 import android.app.Application
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,13 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.rozi.dompetmakanan.R
 import com.rozi.dompetmakanan.data.lokal.TokenPreferences
 import com.rozi.dompetmakanan.model.Food
 import com.rozi.dompetmakanan.ui.components.CustomCard
 import com.rozi.dompetmakanan.ui.components.ProgressBarLoading
 import com.rozi.dompetmakanan.ui.theme.DompetMakananTheme
+import com.rozi.dompetmakanan.utils.ComposeFileProvider
 import com.rozi.dompetmakanan.utils.UiState
 import com.rozi.dompetmakanan.utils.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -44,7 +47,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(
         factory = ViewModelFactory(application)
     ),
-    navController: NavController
+    onSuccess: (String) -> Unit
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -53,7 +56,7 @@ fun HomeScreen(
                 Loading()
             }
             is UiState.Success -> {
-                HomeContent(navController = navController, foods = uiState.data)
+                HomeContent(application = application,foods = uiState.data, onSuccess = onSuccess)
             }
             is UiState.Error -> {}
         }
@@ -69,18 +72,49 @@ fun Loading(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
-    navController: NavController,
-    foods: List<Food>
+    application: Application,
+    foods: List<Food>,
+    onSuccess: (String) -> Unit
 ) {
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
 
-    val preferences = TokenPreferences(LocalContext.current)
+//    val preferences = TokenPreferences(LocalContext.current)
 
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
     val scope = rememberCoroutineScope()
+
+    var hasImage by remember {
+        mutableStateOf(false)
+    }
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            hasImage = uri != null
+            imageUri = uri
+        }
+    )
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            hasImage = success
+        }
+    )
+
+    if(hasImage && imageUri != null){
+        val uri = Uri.encode(imageUri.toString())
+        LaunchedEffect(key1 = Unit){
+            onSuccess(uri!!)
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetShape = RoundedCornerShape(20.dp),
@@ -90,7 +124,9 @@ fun HomeContent(
             Column(Modifier.padding(16.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            imagePicker.launch("image/*")
+                        }
                         .fillMaxWidth()
                         .padding(vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -106,7 +142,11 @@ fun HomeContent(
 
                 Row(horizontalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            val uri = ComposeFileProvider.getImageUri(context = application)
+                            imageUri = uri
+                            cameraLauncher.launch(uri)
+                        }
                         .fillMaxWidth()
                         .padding(vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,

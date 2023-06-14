@@ -31,9 +31,9 @@ interface ApiService {
     ) : Call<LoginResponse>
 
     @GET("users/{id}")
-    fun getUserWithId(
+    suspend fun getUserWithId(
         @Path("id") id : Int
-    ) : Call<GetUserResponse>
+    ) : GetUserResponse
 
     @GET("foods")
     suspend fun getAllFoods() : FoodResponse
