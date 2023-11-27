@@ -3,9 +3,7 @@ package com.rozi.dompetmakanan.ui.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rozi.dompetmakanan.data.repository.FoodRepository
-import com.rozi.dompetmakanan.data.repository.UserRepository
 import com.rozi.dompetmakanan.model.Food
-import com.rozi.dompetmakanan.model.User
 import com.rozi.dompetmakanan.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

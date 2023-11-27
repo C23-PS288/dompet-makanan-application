@@ -42,7 +42,6 @@ class LoginViewModel(application: Application) : ViewModel() {
                         response: Response<LoginResponse>
                     ) {
                         if (response.isSuccessful) {
-//                            isSuccessLoading.value = true
                             _authUIState.value =AuthUIState.OnLogin
                             response.body()?.let {
                                 tokenPreferences.setToken(it.data.accessToken?:"")
